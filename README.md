@@ -83,7 +83,7 @@ git push -u origin main
 
 GitHub 저장소 `Settings > Secrets and variables > Actions`:
 
-- Secret: `FIREBASE_SERVICE_ACCOUNT`
+- Secret: `FIREBASE_TOKEN`
 - Variable: `FIREBASE_PROJECT_ID`
 
 ### 4) 자동 배포
