@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pixel Meadow</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <h1>Pixel Meadow</h1>
+      <p class="subtitle">
+        방향키 / WASD 이동, Shift 달리기, 반짝이는 보석 10개 모으기
+      </p>
+      <canvas id="game" width="320" height="180" aria-label="2D 픽셀아트 게임"></canvas>
+      <div class="touch-pad" id="touchPad" aria-label="터치 컨트롤">
+        <button data-key="ArrowUp">▲</button>
+        <button data-key="ArrowLeft">◀</button>
+        <button data-key="ArrowDown">▼</button>
+        <button data-key="ArrowRight">▶</button>
+      </div>
+    </main>
+    <script src="./game.js"></script>
+  </body>
+</html>
