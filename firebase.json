@@ -5,6 +5,7 @@
       "firebase.json",
       ".firebaserc",
       "README.md",
+      "game.legacy.js",
       "package.json",
       "package-lock.json",
       ".git/**",
