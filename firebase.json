@@ -1,13 +1,13 @@
 {
   "hosting": {
-    "public": ".",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       ".firebaserc",
       "README.md",
-      "game.legacy.js",
       "package.json",
       "package-lock.json",
+      "game.legacy.js",
       ".git/**",
       ".github/**",
       "**/.*",

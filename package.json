@@ -1,11 +1,19 @@
 {
-  "name": "pixel-meadow",
+  "name": "voxel-frontier",
   "private": true,
   "version": "1.0.0",
-  "description": "Pixel Meadow web game",
+  "description": "Web mini minecraft v1",
   "type": "module",
   "scripts": {
-    "check": "find src -name '*.js' -print0 | xargs -0 -n1 node --check",
-    "serve": "python3 -m http.server 8080"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "find src -name '*.js' -print0 | xargs -0 -n1 node --check && vite build --mode ci"
+  },
+  "dependencies": {
+    "three": "^0.176.0"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
   }
 }

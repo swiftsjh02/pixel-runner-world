@@ -2,7 +2,7 @@ export function createAudioSystem(initialVolume = 0.7) {
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   let ctx = null;
   let unlocked = false;
-  let volume = Math.max(0, Math.min(1, initialVolume));
+  let volume = clamp01(initialVolume);
 
   function ensureContext() {
     if (!AudioCtx) {
@@ -20,12 +20,12 @@ export function createAudioSystem(initialVolume = 0.7) {
       return;
     }
     if (ac.state === "suspended") {
-      ac.resume();
+      void ac.resume();
     }
     unlocked = true;
   }
 
-  function beep({ frequency, duration, type = "square", gain = 0.1 }) {
+  function beep(frequency, duration, type, gain = 0.1) {
     const ac = ensureContext();
     if (!ac || !unlocked) {
       return;
@@ -44,35 +44,38 @@ export function createAudioSystem(initialVolume = 0.7) {
 
     osc.connect(amp);
     amp.connect(ac.destination);
+
     osc.start(now);
-    osc.stop(now + duration + 0.03);
+    osc.stop(now + duration + 0.02);
   }
 
   return {
     unlock,
     setVolume(next) {
-      volume = Math.max(0, Math.min(1, next));
+      volume = clamp01(next);
+    },
+    getVolume() {
+      return volume;
+    },
+    playBreak() {
+      beep(190, 0.06, "square", 0.09);
+      setTimeout(() => beep(140, 0.05, "square", 0.08), 20);
+    },
+    playPlace() {
+      beep(320, 0.04, "triangle", 0.08);
+    },
+    playStep() {
+      beep(120, 0.025, "sine", 0.045);
     },
     playJump() {
-      beep({ frequency: 420, duration: 0.08, type: "square", gain: 0.1 });
-    },
-    playDash() {
-      beep({ frequency: 250, duration: 0.05, type: "sawtooth", gain: 0.08 });
-    },
-    playCoin() {
-      beep({ frequency: 880, duration: 0.08, type: "triangle", gain: 0.13 });
-    },
-    playHeart() {
-      beep({ frequency: 600, duration: 0.06, type: "triangle", gain: 0.1 });
-      setTimeout(() => beep({ frequency: 760, duration: 0.08, type: "triangle", gain: 0.1 }), 35);
-    },
-    playHurt() {
-      beep({ frequency: 160, duration: 0.14, type: "square", gain: 0.12 });
-    },
-    playClear() {
-      beep({ frequency: 520, duration: 0.08, type: "triangle", gain: 0.11 });
-      setTimeout(() => beep({ frequency: 660, duration: 0.1, type: "triangle", gain: 0.11 }), 90);
-      setTimeout(() => beep({ frequency: 830, duration: 0.12, type: "triangle", gain: 0.11 }), 180);
+      beep(430, 0.06, "triangle", 0.09);
     },
   };
+}
+
+function clamp01(value) {
+  if (!Number.isFinite(value)) {
+    return 0.7;
+  }
+  return Math.max(0, Math.min(1, value));
 }

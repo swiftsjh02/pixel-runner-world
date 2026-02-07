@@ -1,97 +1,85 @@
-# Pixel Runner World (Mario-style Side Scroller)
+# Voxel Frontier (Web Mini Minecraft v1)
 
-순수 HTML/CSS/JS + Canvas 기반의 2D 횡스크롤 플랫폼 게임입니다.
+`Three.js + Vite` 기반의 1인칭 싱글플레이 복셀 샌드박스입니다.
 
-## v1 포함 기능
+## v1 기능
 
-- 월드맵 + 3개 스테이지 (`1-1`, `1-2`, `1-3`)
-- 수동 좌우 이동 + 점프 + 대시
-- 코요테 타임(100ms), 점프 버퍼(120ms)
-- 생명 시스템 (시작 3, 최대 5)
-- 피격 처리 (무적 1초 + 넉백 + 체크포인트 리스폰)
-- 코인 점수 / 하트 회복
-- 움직이는 발판 (수평/수직/무너짐)
-- 장애물 + 적(순찰/돌진)
-- 로컬 저장(`localStorage`)
-- WebAudio 효과음
-- 디버그 오버레이 (`F3` 토글)
+- 1인칭 이동/점프/달리기
+- 절차적 무한 청크 (`16 x 16 x 96`, 렌더거리 6)
+- 블록 파괴/설치 (거리 6)
+- 핫바 선택 (`1~9`)
+- 크리에이티브 방식(자원 무한)
+- IndexedDB 저장/복원
+- 효과음(파괴/설치/발소리/점프)
 
 ## 실행
 
 ```bash
-npm run serve
+npm install
+npm run dev
 ```
 
-브라우저에서 `http://localhost:8080` 접속
+## 빌드/검증
+
+```bash
+npm run check
+npm run build
+npm run preview
+```
 
 ## 조작
 
-- 이동: `A/D` 또는 `←/→`
-- 점프: `Space`, `W`, `↑`, `Enter`
-- 대시: `Shift`
-- 일시정지: `Esc`
-- 모바일: 하단 터치 버튼 (`◀ ▶ JUMP DASH`)
+- 이동: `W A S D`
+- 점프: `Space`
+- 달리기: `Shift`
+- 시점: 마우스
+- 파괴: 좌클릭
+- 설치: 우클릭
+- 핫바: `1~9`
+- 디버그 HUD 토글: `F3`
+- 포인터 잠금 해제: `Esc`
 
-## 점수 규칙
+## 저장 구조
 
-- 코인: `+100`
-- 스테이지 클리어: `+1000`
-- 남은 생명 보너스: `+300 / life`
-- 하트 오버플로(최대 생명에서 획득): `+100`
+- IndexedDB DB: `voxel_world_v1`
+- store:
+  - `meta` (`seed`, 플레이어 상태, 설정)
+  - `chunks` (`cx,cz` 키 기반 RLE 압축 블록 데이터)
 
-## 저장 스키마
+## 주요 구조
 
-`pixel_runner_save_v1` 키에 다음 구조로 저장됩니다.
+- `/Users/jihoseo/Desktop/코덱스연습/src/main.js`: 부트스트랩/게임 루프
+- `/Users/jihoseo/Desktop/코덱스연습/src/world/chunkManager.js`: 청크 로딩/메시/수정/플러시
+- `/Users/jihoseo/Desktop/코덱스연습/src/world/worldGen.js`: 결정론적 지형 생성
+- `/Users/jihoseo/Desktop/코덱스연습/src/world/mesher.js`: 면 컬링 기반 메시 생성
+- `/Users/jihoseo/Desktop/코덱스연습/src/systems/saveIndexedDb.js`: 저장/복원
 
-- `version`
-- `unlockedStageIndex`
-- `bestScoresByStage`
-- `lastPlayedStageId`
-- `sfxVolume`
+## Firebase Hosting + GitHub Actions
 
-## 구조
+- CI: `.github/workflows/ci.yml`
+  - `npm ci`
+  - `npm run check`
+- PR Preview: `.github/workflows/deploy-preview.yml`
+  - check 성공 후 빌드 및 preview channel 배포 (`7d`)
+- Production: `.github/workflows/deploy-prod.yml`
+  - `main` push 시 check 성공 후 빌드 및 live 배포
 
-- `index.html`: 모듈 엔트리 + HUD + 모바일 컨트롤
-- `styles.css`: 픽셀 렌더링/레이아웃/터치 UI
-- `src/main.js`: 게임 루프/씬 전환/리사이즈/HUD 업데이트
-- `src/data/stages.js`: `StageDefinition` 데이터 (1-1, 1-2, 1-3)
-- `src/scenes/worldMapScene.js`: 월드맵 씬
-- `src/scenes/stageScene.js`: 스테이지 플레이 씬
-- `src/entities/*.js`: 플레이어/적/아이템/발판
-- `src/systems/*.js`: 입력/저장/오디오/물리/충돌
-
-## Firebase Hosting + GitHub CI/CD
-
-### 1) GitHub 저장소 연결
-
-```bash
-git remote add origin <YOUR_GITHUB_REPO_URL>
-git add .
-git commit -m "chore: setup firebase hosting ci cd"
-git push -u origin main
-```
-
-### 2) Firebase 프로젝트 준비
-
-1. Firebase Console에서 새 프로젝트 생성
-2. Hosting 활성화
-3. 서비스 계정 키(JSON) 발급
-
-`.firebaserc`의 `your-firebase-project-id`를 실제 프로젝트 ID로 변경하세요.
-
-### 3) GitHub Actions 시크릿/변수 설정
-
-GitHub 저장소 `Settings > Secrets and variables > Actions`:
+필수 GitHub 설정:
 
 - Secret: `FIREBASE_SERVICE_ACCOUNT`
 - Variable: `FIREBASE_PROJECT_ID`
 
-### 4) 자동 배포
+`/Users/jihoseo/Desktop/코덱스연습/.firebaserc` 의 `your-firebase-project-id`는 실제 Firebase 프로젝트 ID로 변경해야 합니다.
 
-- PR 생성/업데이트: 미리보기 채널 배포 (`7d`)
-- `main` 푸시: `live` 채널 실배포
-- 공통 CI: `npm run check`
+## CLI로 초기 배포 준비 (선택)
 
-### 5) 롤백
+```bash
+# GitHub
+gh auth login
+gh repo create <repo-name> --public --source=. --remote=origin --push
 
-Firebase Console > Hosting > Release history에서 이전 릴리즈 선택
+# Firebase
+firebase login
+firebase use --add
+firebase deploy --only hosting
+```
