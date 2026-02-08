@@ -10,7 +10,7 @@ export const PLAYER = Object.freeze({
   eyeHeight: 1.62,
   walkSpeed: 4.4,
   runSpeed: 7.1,
-  jumpVelocity: 5.9,
+  jumpVelocity: 7.0,
   gravity: 18.0,
   maxFallSpeed: 32,
   groundDrag: 12,

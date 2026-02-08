@@ -20,8 +20,9 @@ export function updatePlayerPhysics(player, controls, world, dt) {
   const sin = Math.sin(yaw);
   const cos = Math.cos(yaw);
 
-  const worldMoveX = moveX * cos - moveZ * sin;
-  const worldMoveZ = moveX * sin + moveZ * cos;
+  // Rotate local input by camera yaw so WASD always matches look direction.
+  const worldMoveX = moveX * cos + moveZ * sin;
+  const worldMoveZ = -moveX * sin + moveZ * cos;
 
   const targetSpeed = controls.sprint ? PLAYER.runSpeed : PLAYER.walkSpeed;
   const targetVx = worldMoveX * targetSpeed;
